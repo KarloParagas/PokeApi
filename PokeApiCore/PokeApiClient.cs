@@ -17,14 +17,33 @@ namespace PokeApiCore
         /// <summary>
         /// Retrieve pokemon by name
         /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<Pokemon> GetPokemonByName(string name)
+        {
+            name = name.ToLower(); //Pokemon name must be lower case
+            return await GetPokemonByNameOrId(name);
+        }
+
+        /// <summary>
+        /// Gets a Pokemon by their Pokedex ID number
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Pokemon> GetPokemonById(int id) 
+        {
+            return await GetPokemonByNameOrId(id.ToString());
+        }
+
+        /// <summary>
+        /// Retrieve pokemon by name or id
+        /// </summary>
         /// <exception cref="HttpRequestException"></exception>
         /// <param name="name"></param>
         /// <exception cref="ArgumentException">Thrown when Pokemon is not found</exception>
         /// <returns></returns>
-        public async Task<Pokemon> GetPokemonByName(string name) 
+        private static async Task<Pokemon> GetPokemonByNameOrId(string name)
         {
-            name = name.ToLower(); //Pokemon name must be lower case
-
             string url = $"https://pokeapi.co/api/v2/pokemon/{name}";
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -36,15 +55,10 @@ namespace PokeApiCore
             {
                 throw new ArgumentException($"{name} does not exist");
             }
-            else 
+            else
             {
                 throw new HttpRequestException();
             }
-        }
-
-        public void GetPokemonById(int id) 
-        {
-            throw new NotImplementedException();
         }
     }
 }

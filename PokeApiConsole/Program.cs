@@ -13,7 +13,8 @@ namespace PokeApiConsole
 
             try
             {
-                Pokemon result = await client.GetPokemonByName("bulbasaur");
+                //Pokemon result = await client.GetPokemonByName("bulbasaur");
+                Pokemon result = await client.GetPokemonById(1);
 
                 Console.WriteLine($"Pokemon Id: {result.id} \nName: {result.name}" +
                     $"\nWeight(in hectograms): {result.weight}" +
