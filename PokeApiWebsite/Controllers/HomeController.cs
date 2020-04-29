@@ -38,13 +38,15 @@ namespace PokeApiWebsite.Controllers
             //Create an entry object with the data pulled from result variable
             var entry = new PokedexEntryViewModel()
             {
-                Id = result.id,
+                Id = result.Id,
                 Name = result.Name,
                 Height = result.Height.ToString(),
                 Weight = result.Weight.ToString(),
-                PokedexImageUrl = result.sprites.FrontDefault,
+                PokedexImageUrl = result.Sprites.FrontDefault,
                 MoveList = resultMoves
             };
+            //entry.Name = entry.Name[0].ToString().ToUpper() + entry.Name.Substring(1); //Uppercases the first letter of name then concatenate's the rest of the name
+            entry.Name = entry.Name.FirstCharToUpper(); //Using StringExtensions class that was created
 
             return View(entry); //Model binds the entry object to the Index view
         }
