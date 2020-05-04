@@ -21,19 +21,9 @@ namespace PokeApiWebsite.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //Instantiate a PokeApiClient to access the client class
-            PokeApiClient myClient = new PokeApiClient();
+            int desiredId = 1;
 
-            //Get a pokemon by it's id
-            Pokemon result = await myClient.GetPokemonById(1);
-
-            //Grab the moves and assign it to a list so that you can assign it to the MoveList property below
-            List<string> resultMoves = new List<string>();
-            foreach (Move currentMove in result.moves) 
-            {
-                resultMoves.Add(currentMove.move.name);
-            }
-            resultMoves.Sort();
+            Pokemon result = await PokeAPIHelper.GetById(desiredId);
 
             //Create an entry object with the data pulled from result variable
             var entry = new PokedexEntryViewModel()
@@ -43,7 +33,12 @@ namespace PokeApiWebsite.Controllers
                 Height = result.Height.ToString(),
                 Weight = result.Weight.ToString(),
                 PokedexImageUrl = result.Sprites.FrontDefault,
-                MoveList = resultMoves
+                //MoveList = result.moves.OrderBy(m => m.move.name)
+                //                       .Select(m => m.move.name)
+                //                       .ToArray()
+                MoveList = (from m in result.moves
+                            orderby m.move.name ascending
+                            select m.move.name).ToArray()
             };
             //entry.Name = entry.Name[0].ToString().ToUpper() + entry.Name.Substring(1); //Uppercases the first letter of name then concatenate's the rest of the name
             entry.Name = entry.Name.FirstCharToUpper(); //Using StringExtensions class that was created
