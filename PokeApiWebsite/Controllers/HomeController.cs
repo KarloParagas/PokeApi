@@ -19,29 +19,14 @@ namespace PokeApiWebsite.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
-            int desiredId = 1;
+            int desiredId = id ?? 1; //Set desiredId to "id", if null, set it to 1
+            ViewData["Id"] = desiredId;
 
             Pokemon result = await PokeAPIHelper.GetById(desiredId);
 
-            //Create an entry object with the data pulled from result variable
-            var entry = new PokedexEntryViewModel()
-            {
-                Id = result.Id,
-                Name = result.Name,
-                Height = result.Height.ToString(),
-                Weight = result.Weight.ToString(),
-                PokedexImageUrl = result.Sprites.FrontDefault,
-                //MoveList = result.moves.OrderBy(m => m.move.name)
-                //                       .Select(m => m.move.name)
-                //                       .ToArray()
-                MoveList = (from m in result.moves
-                            orderby m.move.name ascending
-                            select m.move.name).ToArray()
-            };
-            //entry.Name = entry.Name[0].ToString().ToUpper() + entry.Name.Substring(1); //Uppercases the first letter of name then concatenate's the rest of the name
-            entry.Name = entry.Name.FirstCharToUpper(); //Using StringExtensions class that was created
+            PokedexEntryViewModel entry = PokeAPIHelper.GetPokedexEntryFromPokemon(result);
 
             return View(entry); //Model binds the entry object to the Index view
         }
